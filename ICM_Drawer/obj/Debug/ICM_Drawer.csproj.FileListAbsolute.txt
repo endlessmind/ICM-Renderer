@@ -1,0 +1,13 @@
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\bin\Debug\ICM_Drawer.exe
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\bin\Debug\ICM_Drawer.pdb
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.csprojResolveAssemblyReference.cache
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\MainWindow.g.cs
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\App.g.cs
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer_MarkupCompile.cache
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer_MarkupCompile.lref
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\MainWindow.baml
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.g.resources
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.Properties.Resources.resources
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.csproj.GenerateResource.Cache
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.exe
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.pdb
