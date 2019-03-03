@@ -8,7 +8,6 @@
         Title="MainWindow" Height="350" Width="545" Background="#FFC9C9C9">
     <Grid>
         <Button x:Name="button" Content="Render" HorizontalAlignment="Left" Margin="184,46,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
-        <Label x:Name="lblTest" Content="Label" HorizontalAlignment="Left" Margin="145,72,0,0" VerticalAlignment="Top" Width="199" Visibility="Hidden"/>
         <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="128" Margin="10,127,0,0" VerticalAlignment="Top" Width="512" />
 
     </Grid>
