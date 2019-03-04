@@ -185,7 +185,7 @@ namespace ICM_Drawer
             bp.insertLetter(index += 8, 10, LetterI, ref referenceBmp);
             bp.insertLetter(index += 8, 10, LetterJ, ref referenceBmp);
             bp.insertLetter(index += 8, 10, LetterK, ref referenceBmp);
-            
+
             //Next row
             bp.insertLetter(index = (256 / 2) - 40, 18, LetterL, ref referenceBmp);
             bp.insertLetter(index += 8, 18, LetterM, ref referenceBmp);
@@ -205,13 +205,14 @@ namespace ICM_Drawer
             bp.insertLetter(index += 8, 26, LetterY, ref referenceBmp);
             bp.insertLetter(index += 8, 26, LetterZ, ref referenceBmp);
 
+            //Greating
             bp.insertLetter(index = (256 / 2) - 20, 42, LetterH, ref referenceBmp);
             bp.insertLetter(index += 8, 42, LetterE, ref referenceBmp);
             bp.insertLetter(index += 8, 42, LetterL, ref referenceBmp);
             bp.insertLetter(index += 8, 42, LetterL, ref referenceBmp);
             bp.insertLetter(index += 8, 42, LetterO, ref referenceBmp);
             watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            Console.WriteLine(watch.Elapsed.TotalMilliseconds);
         }
     }
 }

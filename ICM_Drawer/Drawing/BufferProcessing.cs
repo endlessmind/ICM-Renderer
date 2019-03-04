@@ -8,7 +8,7 @@ namespace ICM_Drawer.Drawing
     public class BufferProcessing
     {
         const int bmpHeaderOffset = 61;
-        public void insertLetter(int insCol, int insRow, byte[] lett,ref byte[]data)
+        public void insertLetterLegacy(int insCol, int insRow, byte[] lett,ref byte[]data)
         {
             int row = 0;
             int pixel = 0;
@@ -34,6 +34,45 @@ namespace ICM_Drawer.Drawing
                     }
                 }
             }
+        }
+
+        public void insertLetter(int insCol, int insRow, byte[] lett, ref byte[] data)
+        {
+            int pos = 0;
+            int byteIndex = 0;
+            int nByteIndex = 0;
+            int bitIndex = 0;
+            int bitCount = 8;
+            for (int i = 0; i < 6;i++) //Each row in the letter, should use lett.lenght later on
+            {
+                pos = 256 * (((64 - insRow) + 1) + i) - (256 - insCol);
+                byteIndex = (int)(pos / 8f);
+                nByteIndex = -1;
+                bitIndex = pos - (byteIndex * 8);
+                bitCount = 8;
+
+                if (bitIndex > 0)
+                {
+                    nByteIndex = byteIndex - 1; //It's backward, so move one byte back
+                    bitCount = 8 - bitIndex;
+                }
+
+
+                for (int j = 0; j < 8; j++) //8 bits in a byte
+                {
+                    if (bitIndex == j && bitIndex > 0)
+                    {
+                        byteIndex = nByteIndex;
+                        bitIndex = j * -1;
+                    }
+                    Set(ref data[byteIndex], bitIndex + j, Get(lett[5- i], j));
+
+                }
+
+            }
+
+
+            //Console.WriteLine("test");
         }
 
         public static void Set(ref byte aByte, int pos, bool value)
