@@ -11,3 +11,5 @@ c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\D
 c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.csproj.GenerateResource.Cache
 c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.exe
 c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\obj\Debug\ICM_Drawer.pdb
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\bin\Debug\Microsoft.Expression.Drawing.dll
+c:\users\endle\documents\visual studio 2015\Projects\ICM_Drawer\ICM_Drawer\bin\Debug\Microsoft.Expression.Drawing.xml
