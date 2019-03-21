@@ -99,12 +99,71 @@ namespace ICM_Drawer.Drawing
             }
         }
 
-        public static byte[] bmpDataBuild(byte[] newDataIsr)
+        public static byte[] signalDataBuild(byte[] newDataIsr)
         {
-            const int BMP_FILE_SIZE_2110 = 2110;
             const int PIXEL_DATA_SIZE_2048 = 2048;
             const int PIXEL_DATA_SIZE_2096 = 2096;
-            const int BMP_HEADER_SIZE_62 = 62;
+            const int COLUMN_SIZE_8 = 8;
+            const int COLUMNS = 256;
+            const int ROWS = 64;
+            byte[] bmpData = new byte[PIXEL_DATA_SIZE_2096];
+            int i = 0;
+            int j = 0;
+
+            int byteIndex = 0;
+            int bitIndex = 0;
+            if (bmpData.Length > 2048)
+            {
+                reverseOldIcm(ref newDataIsr);
+            } 
+
+            int rowOffset = 0;
+            for (i = 0; i < PIXEL_DATA_SIZE_2048; i++)
+            {
+                int thisCol = (i % COLUMNS);
+
+                for (j = 0; j < COLUMN_SIZE_8; j++)
+                {
+                    int thisRow = ((ROWS -1) - rowOffset) - j;
+                    int pixel = ((COLUMNS * thisRow) + thisCol); //Basically..
+                    byteIndex = ((int)(pixel / (float)COLUMN_SIZE_8));
+                    bitIndex = (pixel - (byteIndex * COLUMN_SIZE_8));
+                    bitIndex = 7 - bitIndex;
+                    //byte calByte = (byte)(newDataIsr[byteIndex] & (0x80 >> bitIndex));
+                    Set(ref bmpData[i], j, Get(newDataIsr[byteIndex], bitIndex));
+                    //bmpData[i] |= calByte;
+     
+                }
+                if (thisCol == 0 && i > 0)
+                    rowOffset += 8;
+            }
+
+
+
+
+            if (bmpData.Length > 2048)
+            {
+                for (i = PIXEL_DATA_SIZE_2096 - 1; i > -1; i--)
+                {
+                    if ((i % 128) == 0)
+                    {
+                        for (j = (PIXEL_DATA_SIZE_2096 - i - 3) - 1; j > -1; j--)
+                        {
+                            bmpData[i + j + 3] = bmpData[i + j];
+                        }
+                    }
+                }
+            }
+
+            return bmpData;
+        }
+
+        public static byte[] bmpDataBuild(byte[] newDataIsr)
+        {
+
+            const int PIXEL_DATA_SIZE_2048 = 2048;
+            const int PIXEL_DATA_SIZE_2096 = 2096;
+
             const int NB_COLUMNS_32 = 32;
             const int COLUMN_SIZE_8 = 8;
             byte[] bmpData = new byte[PIXEL_DATA_SIZE_2048];
@@ -140,7 +199,20 @@ namespace ICM_Drawer.Drawing
             {
                 for (j = 0; j < COLUMN_SIZE_8; j++)
                 {
-                    bmpData[i] |= (byte)(((newDataIsr[pixelStart + pixelXOffset] & (0x80 >> pixelYOffset)) >> ((COLUMN_SIZE_8 - 1) - pixelYOffset)) << ((COLUMN_SIZE_8 - 1) - j));
+                    byte calByte = newDataIsr[pixelStart + pixelXOffset];
+                    
+                    if (calByte != 0x00)
+                        j = j; //Just for breaking points
+
+                    calByte = (byte)(calByte & (0x80 >> pixelYOffset));
+
+                    calByte = (byte)(calByte >> ((COLUMN_SIZE_8 - 1) - pixelYOffset));
+
+                    calByte = (byte)(calByte << ((COLUMN_SIZE_8 - 1) - j));
+
+                    bmpData[i] |= calByte;
+
+                    //bmpData[i] |= (byte)(((newDataIsr[pixelStart + pixelXOffset] & (0x80 >> pixelYOffset)) >> ((COLUMN_SIZE_8 - 1) - pixelYOffset)) << ((COLUMN_SIZE_8 - 1) - j));
 
                     pixelXOffset++;
                     if (pixelXOffset >= (NB_COLUMNS_32 * COLUMN_SIZE_8))
@@ -158,82 +230,174 @@ namespace ICM_Drawer.Drawing
 
             if (newDataIsr.Length > 2048)
             {
-                //1st pass
-                j = ((32 * 32) + 16);
-                for (k = 0; k < 32; k++)
-                {
-                    for (i = (32 * k); i < (32 * k) + 16; i++)
-                    {
-                        tmp = bmpData[i + j];
-                        bmpData[i + j] = bmpData[i];
-                        bmpData[i] = tmp;
-                    }
-                }
-
-                //2nd pass
-                j = 32 * 32;
-                for (k = 0; k < 8; k++)
-                {
-                    for (i = (32 * k); i < (32 * k) + 32; i++)
-                    {
-                        tmp = bmpData[i + j];
-                        bmpData[i + j] = bmpData[i + (32 * 8)];
-                        bmpData[i + (32 * 8)] = tmp;
-                    }
-                }
-
-                //3rd pass
-                j = 32 * 32;
-                for (k = 0; k < 8; k++)
-                {
-                    for (i = (32 * k); i < (32 * k) + 32; i++)
-                    {
-                        tmp = bmpData[i + j];
-                        bmpData[i + j] = bmpData[i + (32 * 16)];
-                        bmpData[i + (32 * 16)] = tmp;
-                    }
-                }
-
-                //4th pass
-                j = 32 * 40;
-                for (k = 0; k < 8; k++)
-                {
-                    for (i = (32 * k); i < (32 * k) + 32; i++)
-                    {
-                        tmp = bmpData[i + j];
-                        bmpData[i + j] = bmpData[i + (32 * 24)];
-                        bmpData[i + (32 * 24)] = tmp;
-                    }
-                }
-
-                //5th pass
-                j = 32 * 48;
-                for (k = 0; k < 8; k++)
-                {
-                    for (i = (32 * k); i < (32 * k) + 32; i++)
-                    {
-                        tmp = bmpData[i + j];
-                        bmpData[i + j] = bmpData[i + (32 * 40)];
-                        bmpData[i + (32 * 40)] = tmp;
-                    }
-                }
-
-
-
+                fixOldIcm(ref bmpData);
             }
+            //reverseOldIcm(ref bmpData);//Works!!
+            return bmpData;
 
+        }
+
+        public static byte[] addBmpHeader(byte[] bmpData)
+        {
+            const int BMP_FILE_SIZE_2110 = 2110;
+            const int BMP_HEADER_SIZE_62 = 62;
             byte[] bmpFile = new byte[2110];
-            for (i = 0; i < BMP_HEADER_SIZE_62; i++)
+            for (int i = 0; i < BMP_HEADER_SIZE_62; i++)
             {
                 bmpFile[i] = bmpHeader[i];
             }
             //2 - Then pixel data, bottom to top aligned
-            for (i = BMP_HEADER_SIZE_62; i < BMP_FILE_SIZE_2110; i++)
+            for (int i = BMP_HEADER_SIZE_62; i < BMP_FILE_SIZE_2110; i++)
             {
                 bmpFile[i] = bmpData[i - BMP_HEADER_SIZE_62];
             }
 
             return bmpFile;
+        }
+
+
+        private static void fixOldIcm(ref byte[] bmpData)
+        {
+            //Display is split into smaler section that has been moved out of position.
+            //Here we move them back.
+            int i = 0;
+            int j = 0;
+            int k = 0;
+            byte tmp = 0x00;
+
+            //1st pass
+            j = ((32 * 32) + 16);
+            for (k = 0; k < 32; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 16; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i];
+                    bmpData[i] = tmp;
+                }
+            }
+
+            //2nd pass
+            j = 32 * 32;
+            for (k = 0; k < 8; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 32; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i + (32 * 8)];
+                    bmpData[i + (32 * 8)] = tmp;
+                }
+            }
+
+            //3rd pass
+            j = 32 * 32;
+            for (k = 0; k < 8; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 32; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i + (32 * 16)];
+                    bmpData[i + (32 * 16)] = tmp;
+                }
+            }
+
+            //4th pass
+            j = 32 * 40;
+            for (k = 0; k < 8; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 32; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i + (32 * 24)];
+                    bmpData[i + (32 * 24)] = tmp;
+                }
+            }
+
+            //5th pass
+            j = 32 * 48;
+            for (k = 0; k < 8; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 32; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i + (32 * 40)];
+                    bmpData[i + (32 * 40)] = tmp;
+                }
+            }
+        }
+
+
+        private static void reverseOldIcm(ref byte[] bmpData)
+        {
+            //Undo the changes that fixOldIcm does
+            int i = 0;
+            int j = 0;
+            int k = 0;
+            byte tmp = 0x00;
+
+            //5th pass
+            j = 32 * 48;
+            for (k = 0; k < 8; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 32; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i + (32 * 40)];
+                    bmpData[i + (32 * 40)] = tmp;
+                }
+            }
+
+
+            //4th pass
+            j = 32 * 40;
+            for (k = 0; k < 8; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 32; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i + (32 * 24)];
+                    bmpData[i + (32 * 24)] = tmp;
+                }
+            }
+
+
+            //3rd pass
+            j = 32 * 32;
+            for (k = 0; k < 8; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 32; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i + (32 * 16)];
+                    bmpData[i + (32 * 16)] = tmp;
+                }
+            }
+
+
+            //2nd pass
+            j = 32 * 32;
+            for (k = 0; k < 8; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 32; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i + (32 * 8)];
+                    bmpData[i + (32 * 8)] = tmp;
+                }
+            }
+
+            //1st pass
+            j = ((32 * 32) + 16);
+            for (k = 0; k < 32; k++)
+            {
+                for (i = (32 * k); i < (32 * k) + 16; i++)
+                {
+                    tmp = bmpData[i + j];
+                    bmpData[i + j] = bmpData[i];
+                    bmpData[i] = tmp;
+                }
+            }
+
         }
 
         public static void Set(ref byte aByte, int pos, bool value)
